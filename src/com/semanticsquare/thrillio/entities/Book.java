@@ -65,4 +65,9 @@ public class Book extends Bookmark{
 				", amazonRating=" + amazonRating +
 				"} " + super.toString();
 	}
+
+	@Override
+	public boolean isKidFriendlyEligible() {
+		return true;
+	}
 }
