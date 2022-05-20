@@ -16,4 +16,8 @@ public class BookmarkDao {
 
         DataStore.saveUserBookmark(user, bookmark);
     }
+
+    public void setKidFriendlyStatus(User user, String kidFriendlyStatus, Bookmark bookmark) {
+        DataStore.setKidFriendlyStatus(user, kidFriendlyStatus, bookmark);
+    }
 }

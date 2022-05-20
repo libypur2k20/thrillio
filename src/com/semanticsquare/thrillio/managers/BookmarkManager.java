@@ -3,6 +3,7 @@ package com.semanticsquare.thrillio.managers;
 
 import com.semanticsquare.thrillio.dao.BookmarkDao;
 import com.semanticsquare.thrillio.entities.*;
+import com.semanticsquare.thrillio.partner.Shareable;
 
 public class BookmarkManager {
 
@@ -77,6 +78,20 @@ public class BookmarkManager {
 	public void saveUserBookmark(User user, Bookmark bookmark) {
 
 		dao.saveUserBookmark(user, bookmark);
+	}
+
+	public void setKidFriendlyStatus(User user, String kidFriendlyStatus, Bookmark bookmark) {
+
+		dao.setKidFriendlyStatus(user, kidFriendlyStatus,bookmark);
+		System.out.println("Kid-friendly status: " + kidFriendlyStatus + ", Marked by: " + user.getEmail() + ", " + bookmark);
+	}
+
+	public void share(User user, Bookmark bookmark) {
+
+		if (bookmark instanceof Shareable) {
+			bookmark.setSharedBy(user);
+			System.out.println("Data to be shared: " + ((Shareable) bookmark).getItemData());
+		}
 	}
 	
 

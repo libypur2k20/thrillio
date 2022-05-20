@@ -5,6 +5,8 @@ import com.semanticsquare.thrillio.entities.*;
 import com.semanticsquare.thrillio.managers.BookmarkManager;
 import com.semanticsquare.thrillio.managers.UserManager;
 
+import java.util.stream.Stream;
+
 public class DataStore {
 
     public static final int TOTAL_USER_COUNT = 5;
@@ -74,5 +76,13 @@ public class DataStore {
         userBookmark.setUser(user);
         userBookmark.setBookmark(bookmark);
         userBookmarks[userBookmarkIndex++] = userBookmark;
+    }
+
+    public static void setKidFriendlyStatus(User user, String kidFriendlyStatus, Bookmark bookmark) {
+        Stream.of(bookmarks).forEach(bookmarkList -> Stream.of(bookmarkList).filter(item -> item.getId() == bookmark.getId()).findFirst().ifPresent(b -> {
+            b.setKidFriendlyStatus(kidFriendlyStatus);
+            b.setKidFriendlyMarkedBy(user);
+        }
+        ));
     }
 }

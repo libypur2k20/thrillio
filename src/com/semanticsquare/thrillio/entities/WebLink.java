@@ -1,6 +1,8 @@
 package com.semanticsquare.thrillio.entities;
 
-public class WebLink extends Bookmark{
+import com.semanticsquare.thrillio.partner.Shareable;
+
+public class WebLink extends Bookmark implements Shareable {
 	
 	private String url;
 	
@@ -47,5 +49,19 @@ public class WebLink extends Bookmark{
 				"url='" + url + '\'' +
 				", host='" + host + '\'' +
 				"} " + super.toString();
+	}
+
+	@Override
+	public String getItemData() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<item>");
+			sb.append("<type>Weblink</type>");
+			sb.append("<title>").append(getTitle()).append("</title>");
+			sb.append("<url>").append(getUrl()).append("</url>");
+			sb.append("<host>").append(getHost()).append("</host>");
+		sb.append("</item>");
+
+		return sb.toString();
 	}
 }
