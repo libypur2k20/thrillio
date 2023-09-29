@@ -1,9 +1,20 @@
 
 package com.semanticsquare.thrillio.managers;
 
+import com.semanticsquare.thrillio.constants.BookGenre;
+import com.semanticsquare.thrillio.constants.KidFriendlyStatus;
+import com.semanticsquare.thrillio.constants.MovieGenre;
 import com.semanticsquare.thrillio.dao.BookmarkDao;
 import com.semanticsquare.thrillio.entities.*;
 import com.semanticsquare.thrillio.partner.Shareable;
+import com.semanticsquare.thrillio.util.EnumEntities;
+import com.semanticsquare.thrillio.util.HttpConnect;
+import com.semanticsquare.thrillio.util.IOUtil;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 public class BookmarkManager {
 
@@ -22,7 +33,7 @@ public class BookmarkManager {
 	
 	
 	public Book createBook(long id, String title, int publicationYear,
-			String publisher, String[] authors, String genre, double amazonRating) {
+						   String publisher, String[] authors, BookGenre genre, double amazonRating) {
 		
 		Book book = new Book();
 		
@@ -39,7 +50,7 @@ public class BookmarkManager {
 	
 	
 	public Movie createMovie(long id, String title, int releaseYear,
-			String[] cast, String[] directors, String genre, double imdbRating) {
+							 String[] cast, String[] directors, MovieGenre genre, double imdbRating) {
 		
 		Movie movie = new Movie();
 		
@@ -63,12 +74,13 @@ public class BookmarkManager {
 		webLink.setTitle(title);
 		webLink.setUrl(url);
 		webLink.setHost(host);
+		webLink.setDownloadStatus(WebLink.DownloadStatus.NOT_ATTEMPTED);
 		
 		return webLink;
 	}
 
 
-	public Bookmark[][] getBookmarks() {
+	public Map<EnumEntities, List<Bookmark>> getBookmarks() {
 
 		return dao.getBookmarks();
 
@@ -76,11 +88,30 @@ public class BookmarkManager {
 
 
 	public void saveUserBookmark(User user, Bookmark bookmark) {
-
 		dao.saveUserBookmark(user, bookmark);
+		if (bookmark instanceof WebLink){
+			downloadWebLink(((WebLink) bookmark).getUrl(), bookmark.getId());
+		}
 	}
 
-	public void setKidFriendlyStatus(User user, String kidFriendlyStatus, Bookmark bookmark) {
+	private void downloadWebLink(String url, Long bookmarkId) {
+
+		if (!url.endsWith(".pdf")){
+			try {
+				String webPage = HttpConnect.download(url);
+				if (webPage != null){
+					IOUtil.write(webPage, bookmarkId);
+				}
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			} catch (MalformedURLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+	}
+
+	public void setKidFriendlyStatus(User user, KidFriendlyStatus kidFriendlyStatus, Bookmark bookmark) {
 
 		dao.setKidFriendlyStatus(user, kidFriendlyStatus,bookmark);
 		System.out.println("Kid-friendly status: " + kidFriendlyStatus + ", Marked by: " + user.getEmail() + ", " + bookmark);

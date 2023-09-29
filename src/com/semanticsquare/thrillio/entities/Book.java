@@ -14,7 +14,7 @@ public class Book extends Bookmark implements Shareable {
 	
 	private String[] authors;
 	
-	private String genre;
+	private BookGenre genre;
 	
 	private double amazonRating;
 
@@ -42,11 +42,11 @@ public class Book extends Bookmark implements Shareable {
 		this.authors = authors;
 	}
 
-	public String getGenre() {
+	public BookGenre getGenre() {
 		return genre;
 	}
 
-	public void setGenre(String genre) {
+	public void setGenre(BookGenre genre) {
 		this.genre = genre;
 	}
 
@@ -72,7 +72,7 @@ public class Book extends Bookmark implements Shareable {
 
 	@Override
 	public boolean isKidFriendlyEligible() {
-		String bookGenre = this.getGenre();
+		BookGenre bookGenre = this.getGenre();
 		if(bookGenre == BookGenre.PHILOSOPHY || bookGenre == BookGenre.SELF_HELP){
 			return false;
 		}

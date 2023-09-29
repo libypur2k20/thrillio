@@ -1,12 +1,18 @@
 package com.semanticsquare.thrillio.constants;
 
-public class Gender {
+public enum Gender {
 
-    private Gender(){
+    MALE(0),
+    FEMALE(1),
+    TRANSGENDER(2);
 
+    private Gender(int value){
+        this.value = value;
     }
 
-    public static final int MALE = 0;
-    public static final int FEMALE = 1;
-    public static final int TRANSGENDER = 2;
+    private int value;
+
+    public int getValue(){
+        return this.value;
+    }
 }

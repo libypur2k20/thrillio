@@ -6,48 +6,59 @@ import com.semanticsquare.thrillio.controllers.BookmarkController;
 import com.semanticsquare.thrillio.entities.Bookmark;
 import com.semanticsquare.thrillio.entities.User;
 import com.semanticsquare.thrillio.partner.Shareable;
+import com.semanticsquare.thrillio.util.EnumEntities;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class View {
 
-    public static void bookmark(User user, Bookmark[][] bookmarks){
+    public static void bookmark(User user, Map<EnumEntities, List<Bookmark>> bookmarks){
 
         System.out.println("\n" + user.getEmail() + "is bookmarking...");
 
-        for(int i=0; i < DataStore.MAX_BOOKMARKS_PER_USER;i++){
-            int typeOffset = (int)(Math.random() * DataStore.MAX_BOOKMARK_TYPES);
-            int bookmarkOffset = (int)(Math.random() * DataStore.MAX_BOOKMARKS_PER_TYPE);
+        //TODO Calculate total number of items in bookmarks.
 
-            Bookmark bookmark = bookmarks[typeOffset][bookmarkOffset];
+        List<EnumEntities> keysList = bookmarks.keySet().stream().collect(Collectors.toList());
 
-            BookmarkController.getInstance().saveUserBookmark(user, bookmark);
+            int typeOffset = (int)(Math.random() * bookmarks.keySet().size());
+            EnumEntities key = keysList.get(typeOffset);
 
-            System.out.println(bookmark);
-        }
+            int bookmarkOffset = (int)(Math.random() * bookmarks.get(key).size());
+            Bookmark bookmark = bookmarks.get(key).get(bookmarkOffset);
+
+            boolean isBookmarked = getBookmarkDecision(bookmark);
+            if (isBookmarked){
+                BookmarkController.getInstance().saveUserBookmark(user,bookmark);
+                System.out.println("New Item Bookmarked -- " + bookmark);
+            }
+
     }
 
 
-    public static void browse(User user, Bookmark[][] bookmarks){
+    public static void browse(User user, Map<EnumEntities,List<Bookmark>> bookmarks){
 
         System.out.println("\n" + user.getEmail() + "is browsing items...");
         int bookmarkCount = 0;
 
-        for(Bookmark[] bookmarkList : bookmarks){
+        for(List<Bookmark> bookmarkList : bookmarks.values()){
             for(Bookmark bookmark : bookmarkList){
                 //Bookmarking
-                if (bookmarkCount < DataStore.MAX_BOOKMARKS_PER_USER){
-                    boolean isBookmarked = getBookmarkDecision(bookmark);
-                    if (isBookmarked){
-                        bookmarkCount++;
-                        BookmarkController.getInstance().saveUserBookmark(user,bookmark);
-                        System.out.println("New Item Bookmarked -- " + bookmark);
-                    }
+
+                boolean isBookmarked = getBookmarkDecision(bookmark);
+                if (isBookmarked){
+                    bookmarkCount++;
+                    BookmarkController.getInstance().saveUserBookmark(user,bookmark);
+                    System.out.println("New Item Bookmarked -- " + bookmark);
                 }
+
 
                 // Mark as kid-friendly
                 if (user.getUserType().equals(UserType.EDITOR) || user.getUserType().equals(UserType.CHIEF_EDITOR)){
                     // Mark as kid-friendly
                     if (bookmark.isKidFriendlyEligible() && bookmark.getKidFriendlyStatus().equals(KidFriendlyStatus.UNKNOWN)){
-                        String kidFriendlyStatus = getKidFriendlyStatusDecision(bookmark);
+                        KidFriendlyStatus kidFriendlyStatus = getKidFriendlyStatusDecision(bookmark);
                         if (!kidFriendlyStatus.equals(KidFriendlyStatus.UNKNOWN)){
                             BookmarkController.getInstance().setKidFriendlyStatus(user, kidFriendlyStatus, bookmark);
                         }
@@ -67,11 +78,13 @@ public class View {
         }
     }
 
+    // TODO: Below methods simulate user input. After IO, we take input via console.
+
     private static boolean getShareDecision() {
         return (Math.random() < 0.5 ? true : false);
     }
 
-    private static String getKidFriendlyStatusDecision(Bookmark bookmark) {
+    private static KidFriendlyStatus getKidFriendlyStatusDecision(Bookmark bookmark) {
 
         double randomVal = Math.random();
         return (randomVal < 0.4 ? KidFriendlyStatus.APPROVED : (

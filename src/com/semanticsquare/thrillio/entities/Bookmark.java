@@ -10,7 +10,7 @@ public abstract class Bookmark {
 	
 	private String profileUrl;
 
-	private String kidFriendlyStatus = KidFriendlyStatus.UNKNOWN;
+	private KidFriendlyStatus kidFriendlyStatus = KidFriendlyStatus.UNKNOWN;
 
 
 	private User kidFriendlyMarkedBy;
@@ -41,11 +41,11 @@ public abstract class Bookmark {
 		this.profileUrl = profileUrl;
 	}
 
-	public String getKidFriendlyStatus() {
+	public KidFriendlyStatus getKidFriendlyStatus() {
 		return kidFriendlyStatus;
 	}
 
-	public void setKidFriendlyStatus(String kidFriendlyStatus) {
+	public void setKidFriendlyStatus(KidFriendlyStatus kidFriendlyStatus) {
 		this.kidFriendlyStatus = kidFriendlyStatus;
 	}
 

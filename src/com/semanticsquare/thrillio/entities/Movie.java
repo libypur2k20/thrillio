@@ -12,7 +12,7 @@ public class Movie extends Bookmark{
 	
 	private String[] directors;
 	
-	private String genre;
+	private MovieGenre genre;
 	
 	private double imdbRating;
 	
@@ -35,10 +35,10 @@ public class Movie extends Bookmark{
 	public void setDirectors(String[] directors) {
 		this.directors = directors;
 	}
-	public String getGenre() {
+	public MovieGenre getGenre() {
 		return genre;
 	}
-	public void setGenre(String genre) {
+	public void setGenre(MovieGenre genre) {
 		this.genre = genre;
 	}
 	public double getImdbRating() {
@@ -51,7 +51,7 @@ public class Movie extends Bookmark{
 
 	@Override
 	public boolean isKidFriendlyEligible() {
-		String movieGenre = this.getGenre();
+		MovieGenre movieGenre = this.getGenre();
 		return (movieGenre != MovieGenre.HORROR && movieGenre != MovieGenre.THRILLERS);
 	}
 
