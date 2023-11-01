@@ -8,6 +8,7 @@ import com.semanticsquare.thrillio.managers.BookmarkManager;
 import com.semanticsquare.thrillio.managers.UserManager;
 import com.semanticsquare.thrillio.util.EnumEntities;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +17,15 @@ public class Launch {
     private static List<User> users;
     private static Map<EnumEntities,List<Bookmark>> bookmarks;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         loadData();
         //startBookmarking();
         startBrowsing();
+        //start();
 
         // Background Jobs.
-        runDownloaderJob();
+        //runDownloaderJob();
 
     }
 
@@ -45,12 +47,9 @@ public class Launch {
         users = UserManager.getInstance().getUsers();
         bookmarks = BookmarkManager.getInstance().getBookmarks();
 
-        System.out.println(users);
-        System.out.println(bookmarks);
-
-        //System.out.println("2. Printing Data...");
-        //printUserData();
-        //printBookmarkData();
+        System.out.println("2. Printing Data...");
+        printUserData();
+        printBookmarkData();
     }
 
 

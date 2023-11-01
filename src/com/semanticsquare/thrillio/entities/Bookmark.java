@@ -1,8 +1,11 @@
 package com.semanticsquare.thrillio.entities;
 
+import com.semanticsquare.thrillio.constants.BookmarkType;
 import com.semanticsquare.thrillio.constants.KidFriendlyStatus;
 
 public abstract class Bookmark {
+
+	private BookmarkType bookmarkType;
 
 	private long id;
 	
@@ -16,6 +19,14 @@ public abstract class Bookmark {
 	private User kidFriendlyMarkedBy;
 
 	private User sharedBy;
+
+	public BookmarkType getBookmarkType() {
+		return bookmarkType;
+	}
+
+	public void setBookmarkType(BookmarkType bookmarkType) {
+		this.bookmarkType = bookmarkType;
+	}
 
 	public long getId() {
 		return id;

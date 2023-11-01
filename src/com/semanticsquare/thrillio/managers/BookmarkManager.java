@@ -2,6 +2,7 @@
 package com.semanticsquare.thrillio.managers;
 
 import com.semanticsquare.thrillio.constants.BookGenre;
+import com.semanticsquare.thrillio.constants.BookmarkType;
 import com.semanticsquare.thrillio.constants.KidFriendlyStatus;
 import com.semanticsquare.thrillio.constants.MovieGenre;
 import com.semanticsquare.thrillio.dao.BookmarkDao;
@@ -36,7 +37,8 @@ public class BookmarkManager {
 						   String publisher, String[] authors, BookGenre genre, double amazonRating) {
 		
 		Book book = new Book();
-		
+
+		book.setBookmarkType(BookmarkType.BOOK);
 		book.setId(id);
 		book.setTitle(title);
 		book.setPublicationYear(publicationYear);
@@ -53,7 +55,8 @@ public class BookmarkManager {
 							 String[] cast, String[] directors, MovieGenre genre, double imdbRating) {
 		
 		Movie movie = new Movie();
-		
+
+		movie.setBookmarkType(BookmarkType.MOVIE);
 		movie.setId(id);
 		movie.setTitle(title);
 		movie.setReleaseYear(releaseYear);
@@ -69,7 +72,8 @@ public class BookmarkManager {
 	public WebLink createWebLink(long id, String title, String url, String host) {
 		
 		WebLink webLink = new WebLink();
-		
+
+		webLink.setBookmarkType(BookmarkType.WEBLINK);
 		webLink.setId(id);
 		webLink.setTitle(title);
 		webLink.setUrl(url);
@@ -89,9 +93,6 @@ public class BookmarkManager {
 
 	public void saveUserBookmark(User user, Bookmark bookmark) {
 		dao.saveUserBookmark(user, bookmark);
-		if (bookmark instanceof WebLink){
-			downloadWebLink(((WebLink) bookmark).getUrl(), bookmark.getId());
-		}
 	}
 
 	private void downloadWebLink(String url, Long bookmarkId) {
@@ -113,17 +114,22 @@ public class BookmarkManager {
 
 	public void setKidFriendlyStatus(User user, KidFriendlyStatus kidFriendlyStatus, Bookmark bookmark) {
 
-		dao.setKidFriendlyStatus(user, kidFriendlyStatus,bookmark);
+		bookmark.setKidFriendlyStatus(kidFriendlyStatus);
+		bookmark.setKidFriendlyMarkedBy(user);
+
+		dao.updateKidFriendlyStatus(bookmark);
 		System.out.println("Kid-friendly status: " + kidFriendlyStatus + ", Marked by: " + user.getEmail() + ", " + bookmark);
 	}
 
 	public void share(User user, Bookmark bookmark) {
+		bookmark.setSharedBy(user);
 
-		if (bookmark instanceof Shareable) {
-			bookmark.setSharedBy(user);
-			System.out.println("Data to be shared: " + ((Shareable) bookmark).getItemData());
-		}
+		System.out.println("Data to be shared:\n " + ((Shareable) bookmark).getItemData());
+
+		dao.sharedByInfo(bookmark);
 	}
-	
 
 }
+	
+
+
